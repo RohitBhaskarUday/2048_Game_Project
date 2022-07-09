@@ -1,9 +1,6 @@
 #Starting with Logics
 
-import random
-from re import M
-
-from markupsafe import Markup  #to get a random value. We use random Library.
+import random #to get a random value. We use random Library.
 
 def start_the_game():
     Matrix=[]          #Creation of the Matrix
