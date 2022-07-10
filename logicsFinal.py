@@ -22,30 +22,34 @@ def add_new_2(Matrix):  #Adding new 2 to the Matrix
 #Compression. that is compress the non-zero part to one side.
 
 def compress(Matrix):
-
+    changed = False
     new_Matrix = [] #Create a new Matrix now.
     for i in range(4):
-        for j in range(4):
-            new_Matrix.append([0]*4)
-    
+        new_Matrix.append([0]*4)
+
     for i in range(4):  #Move the non-zero values to the left side.
         pos = 0         #using a position variable to which the non-zero value should be moved.
         for j in range(4):
             if Matrix[i][j] != 0:
                 new_Matrix[i][pos] = Matrix[i][j]
+                if j!=pos:
+                    changed = True
                 pos+=1
     
-    return new_Matrix
+    return new_Matrix, changed
         
 #Now, Merge the values which are same values residing consecutively.
 
 def merge(Matrix):
-
-    for i in range(4): # here we multiply the consecutive elements and replace the position with 0
+    changed = False
+    for i in range(4): # here we multiply the consecutive elements and replace the position with 0.
         for j in range(3):
             if Matrix[i][j] == Matrix[i][j+1] and Matrix[i][j]!=0:
+                changed = True
                 Matrix[i][j] = Matrix[i][j]*2
-                Matrix[i][j] = 0
+                Matrix[i][j+1] = 0
+    
+    return Matrix, changed
 
 #Reversing the matrix
 def reverse(Matrix):  #Dry run with a random example and analyze.
@@ -59,7 +63,6 @@ def reverse(Matrix):  #Dry run with a random example and analyze.
 
 #Now, Transposing the Matrix we have
 def transpose(Matrix):  #Dry run with a random example then you will be clear.
-
     new_Matrix=[]
     for i in range(4):
         new_Matrix.append([])
@@ -68,7 +71,47 @@ def transpose(Matrix):  #Dry run with a random example then you will be clear.
 
     return new_Matrix
 
+#Move left. j-th was compared with j-th + 1 
+def move_left(grid):  #grid means a 2D Matrix here.
+    new_grid,changed1 = compress(grid)  #changed is maintained to check whether
+    new_grid,changed2 = merge(new_grid) #any compression or merging has happened
+    changed = changed1 or changed2      #or not.
+    new_grid,temp = compress(new_grid)
+    return new_grid, changed
 
+#Move_right. j-th and j-th + 1 is compared. so,
+def move_right(grid):   #visualize this
+    reversed_grid = reverse(grid) #reverse the matrix and then apply left logic
+    new_grid,changed1 = compress(reversed_grid)
+    new_grid,changed2 = merge(new_grid)
+    changed  = changed1 or changed2
+    new_grid,temp = compress(new_grid)
+    final_grid = reverse(new_grid)
+    return final_grid, changed
+
+#move_up. i-th and i-th + 1 is compared. so transpose first.
+def move_up(grid):    
+    transposed_grid = transpose(grid) #here the logic is transpose,
+    new_grid,changed1 = compress(transposed_grid)
+    new_grid,changed2 = merge(new_grid)  #apply the left logic
+    changed = changed1 or changed2
+    new_grid,temp = compress(new_grid)
+    final_grid = transpose(new_grid) #and then transpose again.
+    return final_grid, changed
+
+#move_down i-th + 1 and i-th is compared. 
+def move_down(grid):
+    transposed_grid = transpose(grid)  #here transpose the grid
+    reversed_grid = reverse(transposed_grid) #reverse the grid
+    new_grid,changed1 = compress(reversed_grid)  #apply the left logic
+    new_grid,changed2 = merge(new_grid)
+    changed = changed1 or changed2
+    new_grid,temp = compress(new_grid)
+    final_reverse_grid = reverse(new_grid) #reverse back the reversed.
+    final_grid = transpose(final_reverse_grid) #then transpose again.
+    return final_grid, changed
+
+#Now take a sample grid and perform operations accordingly.
 
 #Current State of the game
 # There can be 3 possibilites 
@@ -119,5 +162,3 @@ def get_current_state(Matrix):
     # we return LOST.
 
     return "LOST"
-
-
