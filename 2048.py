@@ -3,7 +3,7 @@
 import random #to get a random value. We use random Library.
 
 def start_the_game():
-    Matrix=[]          #Creation of the Matrix
+    Matrix = []          #Creation of the Matrix
     for i in range(4):
         Matrix.append([0]*4)  #4 times We will append list of 0, 2D list with 0 initially at all positions.
     return Matrix
@@ -18,6 +18,57 @@ def add_new_2(Matrix):  #Adding new 2 to the Matrix
         c = random.randint(0,3) #and check whether there is 0 or not.
 
     Matrix[r][c]=2 #when there is 0 at a random place we will add 2 to that place in the matrix
+
+#Compression. that is compress the non-zero part to one side.
+
+def compress(Matrix):
+
+    new_Matrix = [] #Create a new Matrix now.
+    for i in range(4):
+        for j in range(4):
+            new_Matrix.append([0]*4)
+    
+    for i in range(4):  #Move the non-zero values to the left side.
+        pos = 0         #using a position variable to which the non-zero value should be moved.
+        for j in range(4):
+            if Matrix[i][j] != 0:
+                new_Matrix[i][pos] = Matrix[i][j]
+                pos+=1
+    
+    return new_Matrix
+        
+#Now, Merge the values which are same values residing consecutively.
+
+def merge(Matrix):
+
+    for i in range(4): # here we multiply the consecutive elements and replace the position with 0
+        for j in range(3):
+            if Matrix[i][j] == Matrix[i][j+1] and Matrix[i][j]!=0:
+                Matrix[i][j] = Matrix[i][j]*2
+                Matrix[i][j] = 0
+
+#Reversing the matrix
+def reverse(Matrix):  #Dry run with a random example and analyze.
+    new_Matrix = []
+    for i in range(4):
+        new_Matrix.append([]) #we append the no of rows in the list
+        for j in range(4): # we iterate through each column and then
+            new_Matrix[i].append(Matrix[i][4-j-1]) #we add the value of the matrix.
+    
+    return new_Matrix
+
+#Now, Transposing the Matrix we have
+def transpose(Matrix):  #Dry run with a random example then you will be clear.
+
+    new_Matrix=[]
+    for i in range(4):
+        new_Matrix.append([])
+        for j in range(4):
+            new_Matrix[i].append(Matrix[j][i])
+
+    return new_Matrix
+
+
 
 #Current State of the game
 # There can be 3 possibilites 
